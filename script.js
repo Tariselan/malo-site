@@ -36,7 +36,10 @@ function parse(input, scriptNum) {
 const consonant_place = ["Labial", "Coronal", "Palatal", "Velar", "Uvular"];
 const consonant_manner = ["Nasal", "Plosive", "Fricative", "Approximant"];
 
-const consonant_map = new Map([
+const vowel_back = ["Front", "Back"];
+const vowel_height = ["Close", "Open-Mid", "Open"];
+
+const letter_map = new Map([
     [11, letter["1"]],
     [12, letter["7"]],
     [13, letter["e"]],
@@ -53,14 +56,22 @@ const consonant_map = new Map([
     [33, letter["m"]],
     [35, letter["n"]],
     [42, letter["5"]],
+    [111, letter['a']],
+    [112, letter['b']],
+    [113, letter['l']],
+    [121, letter['c']],
+    [122, letter['d']],
+    [123, letter['k']],
+    [134, letter['f']]
 ]);
-const consonant_map_IPA = new Map();
-const consonant_map_lat = new Map();
-const consonant_map_cyr = new Map();
-consonant_map.forEach((value, key) => {
-    consonant_map_IPA.set(key, value["ipa"]);
-    consonant_map_lat.set(key, value["lat"]);
-    consonant_map_cyr.set(key, value["cyr"]);
+
+const letter_map_IPA = new Map();
+const letter_map_lat = new Map();
+const letter_map_cyr = new Map();
+letter_map.forEach((value, key) => {
+    letter_map_IPA.set(key, value["ipa"]);
+    letter_map_lat.set(key, value["lat"]);
+    letter_map_cyr.set(key, value["cyr"]);
 });
 
 // Function to generate the table
@@ -68,7 +79,7 @@ function generateTable(rows, columns, type) {
     if (type == "consonant") {
         // Create a table element
         var table = document.createElement('table');
-
+        table.id = "consonant_table";
         // Create the first row with all th elements
         var headerRow = document.createElement('tr');
         for (var i = 0; i < columns; i++) {
@@ -84,44 +95,48 @@ function generateTable(rows, columns, type) {
         table.appendChild(headerRow);
 
         for (var i = 1; i < rows; i++) {
-        var row = document.createElement('tr');
-
-        // First item as th
-        var th = document.createElement('th');
-        th.textContent = consonant_manner[i - 1];
-        row.appendChild(th);
-        // Remaining items as td
-
-        if (i !=2  && i != 3) {
-            for (var j = 1; j < columns; j++) {
-            var td = document.createElement('td'); 
-            if (consonant_map_IPA.get((i)*10+(j)) != undefined) {
-                td.innerHTML = '&langle;' + '&rangle;  ' + '[' + consonant_map_IPA.get((i)*10+(j)) + ']';
-            }
-            if (j == 1 || j == 2 || j == 4) {
-                td.colSpan = 2;
-            }
-            row.appendChild(td);
-            }
-            table.appendChild(row);
-        } else if (i == 2) {
-            for (var j = 1; j < columns + 3; j++) {
-                var td = document.createElement('td');
-                if (consonant_map_IPA.get((i)*10+(j)) != undefined) {
-                    td.innerHTML = '[' + consonant_map_IPA.get((i)*10+(j)) + ']';
-                }
-                row.appendChild(td);
+            var row = document.createElement('tr');
+            // First item as th
+            var th = document.createElement('th');
+            th.style.width = "100px";
+            th.textContent = consonant_manner[i - 1];
+            row.appendChild(th);
+            // Remaining items as td
+            if (i !=2  && i != 3) {
+                for (var j = 1; j < columns; j++) {
+                    var td = document.createElement('td');
+                    let k = (i)*10+(j);
+                    if (letter_map_IPA.get(k) != undefined) {
+                        td.innerHTML = '&langle;' + letter_map_cyr.get(k) + ' / ' + letter_map_lat.get(k) + '&rangle;  ' + '[' + letter_map_IPA.get(k) + ']';
+                    }
+                    if (j == 1 || j == 2 || j == 4) {
+                        td.colSpan = 2;
+                    }
+                    row.appendChild(td);
                 }
                 table.appendChild(row);
-        } else {
-            for (var j = 1; j < columns + 1; j++) {
-                var td = document.createElement('td');
-                if (consonant_map_IPA.get((i)*10+(j)) != undefined) {
-                    td.innerHTML = '[' + consonant_map_IPA.get((i)*10+(j)) + ']';
+            } 
+            else if (i == 2) {
+                for (var j = 1; j < columns + 3; j++) {
+                    var td = document.createElement('td');
+                    let k = (i)*10+(j);
+                    if (letter_map_IPA.get((i)*10+(j)) != undefined) {
+                        td.innerHTML = '&langle;' + letter_map_cyr.get(k) + ' / ' + letter_map_lat.get(k) + '&rangle;  ' + '[' + letter_map_IPA.get(k) + ']';
+                    }
+                    row.appendChild(td);
                 }
-                if (j == 1 || j == 5) {
-                    td.colSpan = 2;
-                }
+                table.appendChild(row);
+            }
+            else {
+                for (var j = 1; j < columns + 1; j++) {
+                    var td = document.createElement('td');
+                    let k = (i)*10+(j);
+                    if (letter_map_IPA.get((i)*10+(j)) != undefined) {
+                        td.innerHTML = '&langle;' + letter_map_cyr.get(k) + ' / ' + letter_map_lat.get(k) + '&rangle;  ' + '[' + letter_map_IPA.get(k) + ']';
+                    }
+                    if (j == 1 || j == 5) {
+                        td.colSpan = 2;
+                    }
                 row.appendChild(td);
                 }
                 table.appendChild(row);
@@ -130,7 +145,60 @@ function generateTable(rows, columns, type) {
         // Append the table to the body
         document.body.appendChild(table);
     }
+    else if (type == "vowel") {
+        // Create a table element
+        var table = document.createElement('table');
+        table.id = "vowel_table";
+        // Create the first row with all th elements
+        var headerRow = document.createElement('tr');
+        for (var i = 0; i < columns - 2; i++) {
+            var th = document.createElement('th');
+            th.textContent = vowel_back[i-1];
+            if (i) {
+                th.colSpan = 2;
+            }
+            headerRow.appendChild(th);
+        }
+        table.appendChild(headerRow);
+
+        for (var i = 1; i <= rows; i++) {
+            var row = document.createElement('tr');
+            var th = document.createElement('th');
+            th.textContent = vowel_height[i-1];
+            th.style.width = "100px";
+            row.appendChild(th);
+            if (i != 3) {
+                for (var j = 1; j <= columns - 2; j++) {
+                    var td = document.createElement('td');
+                    let k = 100 + (i * 10) + j;
+                    if (letter_map_IPA.get(k) !== undefined) {
+                        td.innerHTML = '&langle;' + letter_map_cyr.get(k) + ' / ' + letter_map_lat.get(k) + '&rangle;  ' + '[' + letter_map_IPA.get(k) + ']';
+                    }
+                    if (j)
+                    row.appendChild(td);
+                }
+                table.appendChild(row);
+            }
+            else {
+                var td = document.createElement('td');
+                td.colSpan = 3;
+                let k = 100 + (i * 10) + j;
+                if (letter_map_IPA.get(k) !== undefined) {
+                    td.innerHTML = '&langle;' + letter_map_cyr.get(k) + ' / ' + letter_map_lat.get(k) + '&rangle;  ' + '[' + letter_map_IPA.get(k) + ']';
+                }
+                row.appendChild(td);
+                table.appendChild(row);
+            }
+        }
+
+        // Append the table to the body
+        document.body.appendChild(table);
+    }
 }
 
 // Call the function with the desired number of rows and columns
 generateTable(5, 6, "consonant");
+document.body.append(document.createElement('br'));
+window.addEventListener("DOMContentLoaded", function(){
+    generateTable(3, 5, "vowel");
+})
