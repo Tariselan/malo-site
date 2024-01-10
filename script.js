@@ -4,6 +4,10 @@
 */
 import imports from './JSON/imports.json' assert {type: 'json'};
 const texts = imports;
+texts.texts.creation_story.forEach(entry => {
+    document.getElementById("creation").innerHTML = document.getElementById("creation").innerHTML + entry;
+});
+
 
 const letterMap = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
 const scriptMap = ["lat", "cyr", "ipa"];
@@ -24,6 +28,10 @@ function parse(input, scriptNum) {
             output.push(convertedInput[scriptMap[scriptNum]]);
         } else if (element == " ") {
             output.push(" ");
+        } else if (element == ".") {
+            output.push(".");
+        } else if (element == ",") {
+            output.push(",");
         }
         else {
             // Handle the case where the element is not found
@@ -33,6 +41,31 @@ function parse(input, scriptNum) {
     return output.join("");
 }
 
+// Loop through each span and log its innerHTML
+for (var i = 0; i < document.getElementsByTagName('span').length; i++) {
+    let text = document.getElementsByTagName('span')[i].innerHTML;
+    let text_lat = parse(text, 0);
+    let text_cyr = parse(text, 1);
+    document.getElementsByTagName('span')[i].innerHTML = text_lat + '<br>' + text_cyr;
+}
+let map = new Map();
+letterMap.forEach(LETTER => {
+    scriptMap.forEach(script => {
+        let array = [];
+        array.push(LETTER);
+        array.push(script);
+        map.set(array, String.fromCharCode((letter[LETTER][script]).replace("&#", "").replace(";","")))
+    })
+})
+const tableData = Array.from(map, ([array, entry]) => {
+    const itemColumns = array.map((val, index) => ({ [`Item${index + 1}`]: val }));
+    const combinedColumns = Object.assign({}, ...itemColumns, { Entry: entry });
+    return combinedColumns;
+  });
+// Print the table
+console.table(tableData);
+
+//
 const consonant_place = ["Labial", "Coronal", "Palatal", "Velar", "Uvular"];
 const consonant_manner = ["Nasal", "Plosive", "Fricative", "Approximant"];
 
@@ -197,8 +230,11 @@ function generateTable(rows, columns, type) {
 }
 
 // Call the function with the desired number of rows and columns
-generateTable(5, 6, "consonant");
-document.body.append(document.createElement('br'));
+
 window.addEventListener("DOMContentLoaded", function(){
+    generateTable(5, 6, "consonant");
+    document.body.append(document.createElement('br'));
     generateTable(3, 5, "vowel");
-})
+});
+
+
