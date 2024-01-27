@@ -9,6 +9,7 @@ table#vowel_table {
 }
 th, td {
   border: 1px solid #ddd;
+  background-color: #fafafa;
   padding: 8px;
   text-align: center;
 }
@@ -20,14 +21,19 @@ body {
 }
 
 div#tables {
-  width: 700px;
+  width: 1000px;
   height: 400px;
   position: relative;
-  left: 25vw;
+  left: 15vw;
   top: 25vh;
   background-color: #ddd;
   border: solid 10px #aaa;
   border-radius: 25px;
+  padding: 10px;
+}
+div#tables > table {
+  position: relative;
+  left: 5%;
 }
 
 #tables > button {

@@ -7,7 +7,7 @@ const imported = imports;
 
 const letterMap = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
 const scriptMap = ["lat", "cyr", "ipa"];
-
+let targetElement;
 
 import letters from './JSON/letter.json' assert {type: 'json'};
 const letter = letters;
@@ -172,8 +172,7 @@ function generateTable(rows, columns, type) {
                 table.appendChild(row);
             }
         }
-        // Append the table to the body
-        document.body.appendChild(table);
+        
     }
     else if (type == "vowel") {
         // Create a table element
@@ -220,16 +219,21 @@ function generateTable(rows, columns, type) {
                 table.appendChild(row);
             }
         }
-        // Append the table to the body
-        document.body.appendChild(table);
     }
+    targetElement.appendChild(table);
 }
 
 // Call the function with the desired number of rows and columns
-function tableButtonGenerate() {
+function tableButtonGenerate(id) {
+    // Use the external targetElement variable directly
+    targetElement = document.getElementById(id);
     generateTable(5, 6, "consonant");
     document.body.append(document.createElement('br'));
     generateTable(3, 5, "vowel");
 }
 
-document.getElementById('tablegen').addEventListener('click', tableButtonGenerate);
+document.getElementById('tablegen').addEventListener('click', function () {
+    // Pass the element ID as an argument to tableButtonGenerate
+    tableButtonGenerate('tables');
+    document.getElementById('tablegen').remove();
+});
