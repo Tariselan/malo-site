@@ -3,11 +3,7 @@
 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n
 */
 import imports from './JSON/imports.json' assert {type: 'json'};
-const texts = imports;
-texts.texts.creation_story.forEach(entry => {
-    document.getElementById("creation").innerHTML = document.getElementById("creation").innerHTML + entry;
-});
-
+const imported = imports;
 
 const letterMap = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
 const scriptMap = ["lat", "cyr", "ipa"];
@@ -49,6 +45,7 @@ for (var i = 0; i < document.getElementsByTagName('span').length; i++) {
     document.getElementsByTagName('span')[i].innerHTML = text_lat + '<br>' + text_cyr;
 }
 let map = new Map();
+
 letterMap.forEach(LETTER => {
     scriptMap.forEach(script => {
         let array = [];
@@ -223,18 +220,16 @@ function generateTable(rows, columns, type) {
                 table.appendChild(row);
             }
         }
-
         // Append the table to the body
         document.body.appendChild(table);
     }
 }
 
 // Call the function with the desired number of rows and columns
-
-window.addEventListener("DOMContentLoaded", function(){
+function tableButtonGenerate() {
     generateTable(5, 6, "consonant");
     document.body.append(document.createElement('br'));
     generateTable(3, 5, "vowel");
-});
+}
 
-
+document.getElementById('tablegen').addEventListener('click', tableButtonGenerate);
