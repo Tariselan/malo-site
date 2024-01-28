@@ -231,9 +231,3 @@ function tableButtonGenerate(id) {
     document.body.append(document.createElement('br'));
     generateTable(3, 5, "vowel");
 }
-
-document.getElementById('tablegen').addEventListener('click', function () {
-    // Pass the element ID as an argument to tableButtonGenerate
-    tableButtonGenerate('tables');
-    document.getElementById('tablegen').remove();
-});
